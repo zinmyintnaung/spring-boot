@@ -1,5 +1,7 @@
 package com.springboot.hibernate;
 
+import java.util.List;
+
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -19,9 +21,28 @@ public class HibernateApplication {
     public CommandLineRunner commandLineRunner(StudentDAO studentDAO){
         return runner -> {
             //createStudent(studentDAO);
-            //createMultipleStudents(studentDAO);
-            readStudent(studentDAO);
+            createMultipleStudents(studentDAO);
+            //readStudent(studentDAO);
+            //queryForStudents(studentDAO);
+            //queryForStudentsByLastName(studentDAO);
+            //updateStudent(studentDAO);
+            //deleteStudent(studentDAO);
+            //deleteAllStudents(studentDAO);
         };
+    }
+
+   
+    private void updateStudent(StudentDAO studentDAO) {
+        //Get student to update
+        System.out.println("Getting student..");
+        Student myStudent = studentDAO.findById(2);
+
+        //Call update using studentDAO
+        myStudent.setFirstName("Jenny");
+        studentDAO.update(myStudent);
+
+        //Display the updated studnet
+        System.out.println("The updated student is : " + myStudent);
     }
 
     private void readStudent(StudentDAO studentDAO) {
@@ -68,5 +89,54 @@ public class HibernateApplication {
         //display id of the created student object
         System.out.println("Saved Student. Generate id: " + newStudent.getId());
     }
+
+    public void queryForStudents(StudentDAO studentDAO){
+        //Find all students and create studnets list
+        List<Student> theStudents = studentDAO.findAll();
+        
+        //Loop each student from theStudents List
+        for(Student tempStudent : theStudents){
+            System.out.println(tempStudent);
+        }
+    }
+
+    private void queryForStudentsByLastName(StudentDAO studentDAO) {
+        //Find student with given last name
+        List<Student> theStudents = studentDAO.findByLastName("doe");
+
+        //Loop result and display
+        for(Student tempStudent : theStudents){
+            System.out.println(tempStudent);
+        }
+    }
+
+    private void deleteStudent(StudentDAO studentDAO) {
+        //Find a student to remove
+        Student myStudent = studentDAO.findById(1);
+        
+        
+        if(myStudent != null){
+            System.out.println("This student will be removed: " + myStudent);
+            //Remove a student
+            System.out.println("Removing student..");
+            studentDAO.delete(myStudent.getId());
+
+            //Get all remaining student to check
+            List<Student> theStudents = studentDAO.findAll();
+            //Loop result and display
+            for(Student tempStudent : theStudents){
+                System.out.println(tempStudent);
+            }
+        }else{
+            System.out.println("Student NOT found!");
+        }
+        
+    }
+
+    private void deleteAllStudents(StudentDAO studentDAO) {
+        int num = studentDAO.deleteAll();
+        System.out.println("Total " + num + " rows deleted!");
+    }
+
 
 }
