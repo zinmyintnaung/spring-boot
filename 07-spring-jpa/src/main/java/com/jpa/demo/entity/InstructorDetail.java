@@ -17,6 +17,9 @@ public class InstructorDetail {
     @Column(name="hobby")
     private String hobby;
 
+    //THIS WILL LINKED INSTRUCTOR OBJECT, TO retain instructor record when deleting the detail, we can change CascadeType as follows
+    @OneToOne(mappedBy = "instructorDetail", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    private Instructor instructor;
 
     public InstructorDetail() {
     }
@@ -64,6 +67,16 @@ public class InstructorDetail {
         setHobby(hobby);
         return this;
     }
+
+
+    public Instructor getInstructor() {
+        return this.instructor;
+    }
+
+    public void setInstructor(Instructor instructor) {
+        this.instructor = instructor;
+    }
+
 
     @Override
     public String toString() {
