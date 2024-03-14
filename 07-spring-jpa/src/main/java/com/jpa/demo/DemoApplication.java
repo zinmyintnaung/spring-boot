@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 import com.jpa.demo.dao.AppDAO;
+import com.jpa.demo.entity.Course;
 import com.jpa.demo.entity.Instructor;
 import com.jpa.demo.entity.InstructorDetail;
 
@@ -23,8 +24,30 @@ public class DemoApplication {
             //findInstructor(appDAO);
             //deleteInstructor(appDAO);
             //findInstructorDetail(appDAO);
-            deleteInstructorDetail(appDAO);
+            //deleteInstructorDetail(appDAO);
+            createInstructorWithCourses(appDAO);
         };
+    }
+
+    private void createInstructorWithCourses(AppDAO appDAO){
+        //Create instructor first
+        Instructor tempInstructor = new Instructor("Fahim", "Ansari", "fa@email.com");
+        //Create instructor detail
+        InstructorDetail tempInstructorDetail = new InstructorDetail("http://youtube.com", "Coding");
+        //associate the objects
+        tempInstructor.setInstructorDetail(tempInstructorDetail);
+
+        //Create some courses
+        Course tempCourseOne = new Course("Heavy Metal - One week crash course!");
+        Course tempCourseTwo = new Course("Classical - 30 Days fingerstyle crash course!");
+        tempInstructor.add(tempCourseOne);
+        tempInstructor.add(tempCourseTwo);
+
+        //Now we can save the instructor
+        System.out.println("Saving instructor with courses.." + tempInstructor);
+        System.out.println("Adding courses: " + tempInstructor.getCourses());
+        appDAO.save(tempInstructor); //this will also save courses associated with instructor
+        System.out.println("Done");
     }
 
     private void deleteInstructorDetail(AppDAO appDAO){
