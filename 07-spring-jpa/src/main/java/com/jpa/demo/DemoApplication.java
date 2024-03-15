@@ -1,5 +1,7 @@
 package com.jpa.demo;
 
+import java.util.List;
+
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -25,8 +27,41 @@ public class DemoApplication {
             //deleteInstructor(appDAO);
             //findInstructorDetail(appDAO);
             //deleteInstructorDetail(appDAO);
-            createInstructorWithCourses(appDAO);
+            //createInstructorWithCourses(appDAO);
+            //findInstructorWithCourses(appDAO);
+            findInstructorWithCoursesJoinFetch(appDAO);
         };
+    }
+
+    private void findInstructorWithCoursesJoinFetch(AppDAO appDAO) {
+
+		int theId = 1;
+
+		// find the instructor
+		System.out.println("Finding instructor id: " + theId);
+		Instructor tempInstructor = appDAO.findInstructorByIdJoinFetch(theId);
+
+		System.out.println("tempInstructor: " + tempInstructor);
+		System.out.println("the associated courses: " + tempInstructor.getCourses());
+
+		System.out.println("Done!");
+	}
+
+    private void findInstructorWithCourses(AppDAO appDAO){
+        Integer id = 1;
+        System.out.println("Searching..");
+
+        //find the instructor
+        Instructor tempInstructor = appDAO.findInstructorById(id);
+        System.out.println("Instructor found " + tempInstructor);
+
+        //find the associated courses
+        List<Course> courses = appDAO.findCoursesByInstructorId(id);
+
+        //bind the instructor and courses
+        tempInstructor.setCourses(courses);
+
+        System.out.println("Associated courses: " + tempInstructor.getCourses());
     }
 
     private void createInstructorWithCourses(AppDAO appDAO){
