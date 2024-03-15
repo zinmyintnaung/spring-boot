@@ -1,5 +1,8 @@
 package com.jpa.demo.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -18,13 +21,15 @@ public class Course {
     @JoinColumn(name="instructor_id")
     private Instructor instructor;
 
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name="course_id") //this refer to course_id inside review table
+    private List<Review> reviews;
+
     public Course() {
     }
 
     public Course(String title) {
-       
         this.title = title;
-       
     }
 
     public int getId() {
@@ -51,6 +56,22 @@ public class Course {
         this.instructor = instructor;
     }
 
+
+    public List<Review> getReviews() {
+        return this.reviews;
+    }
+
+    public void setReviews(List<Review> reviews) {
+        this.reviews = reviews;
+    }
+
+    public void addReview(Review tempReview){
+        if(reviews == null){
+            reviews = new ArrayList<>();
+        }
+        reviews.add(tempReview);
+    }
+
     @Override
     public String toString() {
         return "{" +
@@ -59,6 +80,4 @@ public class Course {
             
             "}";
     }
-
-
 }

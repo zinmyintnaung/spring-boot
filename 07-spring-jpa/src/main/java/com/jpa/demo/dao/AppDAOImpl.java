@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import com.jpa.demo.entity.Course;
 import com.jpa.demo.entity.Instructor;
 import com.jpa.demo.entity.InstructorDetail;
+import com.jpa.demo.entity.Review;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
@@ -38,6 +39,13 @@ public class AppDAOImpl implements AppDAO {
     public void deleteInstructorById(Integer id){
         //retrieve the instructor first
         Instructor tempInstructor = entityManager.find(Instructor.class, id);
+
+        //find associated course and break the one to many relation
+        List<Course> courses = tempInstructor.getCourses();
+        for(Course eachCourse: courses){
+            eachCourse.setInstructor(null);
+        }
+
         //then delete the instructor using remove()
         entityManager.remove(tempInstructor);
     }
@@ -85,5 +93,49 @@ public class AppDAOImpl implements AppDAO {
         Instructor instructor = query.getSingleResult();
 
         return instructor;
+    }
+
+    @Override
+    @Transactional
+    public void update(Instructor theInstructor) {
+        entityManager.merge(theInstructor);
+    }
+
+    @Override
+    public Course findCourseById(Integer id) {
+        return entityManager.find(Course.class, id);
+    }
+
+    @Override
+    @Transactional
+    public void update(Course theCourse) {
+        entityManager.merge(theCourse);
+    }
+
+    @Override
+    @Transactional
+    public void deleteCourseById(Integer id) {
+        Course tempCourse = entityManager.find(Course.class, id);
+        entityManager.remove(tempCourse);
+    }
+
+    @Override
+    @Transactional
+    public void save(Course theCourse) {
+        entityManager.persist(theCourse);//this will save course and associated review due to Cascade.ALL
+    }
+
+    @Override
+    public Course findCourseAndReviewsByCourseId(Integer id) {
+        //create query, binding the course and reveiew with JOIN FETCH
+        TypedQuery<Course> query = entityManager.createQuery("select c from Course c " 
+                                                            +"JOIN FETCH c.reviews "
+                                                            +"WHERE c.id = :data", Course.class);
+        query.setParameter("data", id);
+
+        //execute query
+        Course course = query.getSingleResult();
+
+        return course;
     }
 }

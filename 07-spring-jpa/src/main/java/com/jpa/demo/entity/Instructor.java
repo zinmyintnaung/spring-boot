@@ -32,7 +32,6 @@ public class Instructor {
         cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     private List<Course> courses;
 
-
     public Instructor() {
     }
 
@@ -100,7 +99,6 @@ public class Instructor {
         tempCourse.setInstructor(this); //here we add instructor (this) to the course, bi-directional
     }
 
-
     @Override
     public String toString() {
         return "{" +
@@ -111,6 +109,5 @@ public class Instructor {
             ", instructorDetail='" + getInstructorDetail() + "'" +
             "}";
     }
-
 
 }

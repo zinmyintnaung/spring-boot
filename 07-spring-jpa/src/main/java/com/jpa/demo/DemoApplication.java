@@ -11,6 +11,7 @@ import com.jpa.demo.dao.AppDAO;
 import com.jpa.demo.entity.Course;
 import com.jpa.demo.entity.Instructor;
 import com.jpa.demo.entity.InstructorDetail;
+import com.jpa.demo.entity.Review;
 
 @SpringBootApplication
 public class DemoApplication {
@@ -29,8 +30,80 @@ public class DemoApplication {
             //deleteInstructorDetail(appDAO);
             //createInstructorWithCourses(appDAO);
             //findInstructorWithCourses(appDAO);
-            findInstructorWithCoursesJoinFetch(appDAO);
+            //findInstructorWithCoursesJoinFetch(appDAO);
+            //updateInstructor(appDAO);
+            //updateCourse(appDAO);
+            //deleteCourse(appDAO);
+            //createCourseAndReviews(appDAO);
+            //findCourseAndReviews(appDAO);
+            //deleteCourseAndReviews(appDAO);
         };
+    }
+
+    private void deleteCourseAndReviews(AppDAO appDAO) {
+        Integer id = 12;
+        System.out.println("Deleting course ID: " + id);
+        appDAO.deleteCourseById(id);
+        System.out.println("Done..");
+    }
+
+    private void findCourseAndReviews(AppDAO appDAO) {
+        //get the course
+        Integer id = 12;
+        Course tempCourse = appDAO.findCourseAndReviewsByCourseId(id);
+
+        //print the course
+        System.out.println(tempCourse);
+
+        //print associated reviews
+        System.out.println(tempCourse.getReviews());
+    }
+
+    public void createCourseAndReviews(AppDAO appDAO){
+        //create a course
+        Course tempCourse = new Course("How to play piano");
+
+        //add review
+        tempCourse.addReview(new Review("nice course"));
+        tempCourse.addReview(new Review("good job"));
+        tempCourse.addReview(new Review("amazingly cool"));
+
+
+        System.out.println("Saving course with review..");
+        System.out.println("The course: " + tempCourse);
+        System.out.println("The review: " + tempCourse.getReviews());
+
+        //save course (together with reviews)
+        appDAO.save(tempCourse);
+        System.out.println("Save completed.");
+    }
+
+    private void deleteCourse(AppDAO appDAO) {
+        Integer id = 11;
+        System.out.println("Deleting..");
+        appDAO.deleteCourseById(id);
+        System.out.println("Done..");
+    }
+
+    public void updateCourse(AppDAO appDAO){
+        Integer id = 11;
+        System.out.println("Finding course..");
+        Course course = appDAO.findCourseById(id);
+        course.setTitle("Rock Bottom");
+        System.out.println("Updateing course..");
+        appDAO.update(course);
+        System.out.println("Done...");
+    }
+
+    private void updateInstructor(AppDAO appDAO){
+        int theId = 1;
+
+        System.out.println("Finding instructor..");
+        Instructor tempInstructor = appDAO.findInstructorById(theId);
+        System.out.println("Updating instructor ID.." + theId);
+        tempInstructor.setLastName("TESTER");
+        appDAO.update(tempInstructor);
+        System.out.println("Done...");
     }
 
     private void findInstructorWithCoursesJoinFetch(AppDAO appDAO) {
@@ -102,7 +175,7 @@ public class DemoApplication {
     }
 
     private void deleteInstructor(AppDAO appDAO){
-        Integer id = 2;
+        Integer id = 1;
         System.out.println("Deleting.." + id);
         appDAO.deleteInstructorById(id);
         System.out.println("Record deleted.");
