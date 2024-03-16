@@ -12,6 +12,7 @@ import com.jpa.demo.entity.Course;
 import com.jpa.demo.entity.Instructor;
 import com.jpa.demo.entity.InstructorDetail;
 import com.jpa.demo.entity.Review;
+import com.jpa.demo.entity.Student;
 
 @SpringBootApplication
 public class DemoApplication {
@@ -37,7 +38,63 @@ public class DemoApplication {
             //createCourseAndReviews(appDAO);
             //findCourseAndReviews(appDAO);
             //deleteCourseAndReviews(appDAO);
+            //createCourseAndStudents(appDAO);
+            //findCourseAndStudents(appDAO);
+            //findStudentAndCourses(appDAO);
+            //addMoreCoursesForStudent(appDAO);
+            deleteStudent(appDAO);
         };
+    }
+
+    private void deleteStudent(AppDAO appDAO) {
+        Integer id = 3;
+        System.out.println("Deleting Student ID: " + id);
+        appDAO.deleteStudentById(id);
+    }
+
+    private void addMoreCoursesForStudent(AppDAO appDAO) {
+        int id=2;
+        Student tempStudent = appDAO.findStudentAndCoursesByStudentId(id);
+        tempStudent.addCourse(new Course("How to score peneka"));
+        tempStudent.addCourse(new Course("Passing master"));
+
+        System.out.println("Saving Student: " + tempStudent);
+        System.out.println("New Courses: " + tempStudent.getCourses());
+        appDAO.update(tempStudent);
+        System.out.println("Done");
+    }
+
+    private void findStudentAndCourses(AppDAO appDAO) {
+        Integer id = 2;
+        Student tempStudent = appDAO.findStudentAndCoursesByStudentId(id);
+
+        System.out.println("Student: " + tempStudent);
+        System.out.println("Courses: " + tempStudent.getCourses());
+    }
+
+    private void findCourseAndStudents(AppDAO appDAO) {
+        Integer id = 13;
+        Course tempCourse = appDAO.findCourseAndStudentsByCourseId(id);
+
+        System.out.println("Course: " + tempCourse);
+        System.out.println("Students: " + tempCourse.getStudents());
+
+    }
+
+    private void createCourseAndStudents(AppDAO appDAO) {
+        //create course
+        Course tempCourse = new Course("How to play a drum!");
+        
+        //add students to the course
+        tempCourse.addStudent(new Student("Fahim", "Ansari", "fa@email.com"));
+        tempCourse.addStudent(new Student("Leo", "Messi", "leo@email.com"));
+        tempCourse.addStudent(new Student("Luiz", "Suarez", "insane@email.com"));
+        
+        System.out.println("Saving course: " + tempCourse);
+        System.out.println("All Students: " + tempCourse.getStudents());
+        
+        //save course with students
+        appDAO.save(tempCourse);
     }
 
     private void deleteCourseAndReviews(AppDAO appDAO) {
@@ -79,7 +136,7 @@ public class DemoApplication {
     }
 
     private void deleteCourse(AppDAO appDAO) {
-        Integer id = 11;
+        Integer id = 14;
         System.out.println("Deleting..");
         appDAO.deleteCourseById(id);
         System.out.println("Done..");

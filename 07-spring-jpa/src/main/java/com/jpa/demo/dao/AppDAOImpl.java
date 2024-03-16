@@ -8,6 +8,7 @@ import com.jpa.demo.entity.Course;
 import com.jpa.demo.entity.Instructor;
 import com.jpa.demo.entity.InstructorDetail;
 import com.jpa.demo.entity.Review;
+import com.jpa.demo.entity.Student;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
@@ -137,5 +138,48 @@ public class AppDAOImpl implements AppDAO {
         Course course = query.getSingleResult();
 
         return course;
+    }
+
+    @Override
+    public Course findCourseAndStudentsByCourseId(Integer id) {
+        TypedQuery<Course> query = 
+                entityManager.createQuery("select c from Course c " 
+                +"JOIN FETCH c.students "
+                +"WHERE c.id = :data", Course.class);
+        
+        query.setParameter("data", id);
+
+        //execute query
+        Course course = query.getSingleResult();
+
+        return course;
+    }
+
+    @Override
+    public Student findStudentAndCoursesByStudentId(Integer id) {
+        TypedQuery<Student> query = 
+                entityManager.createQuery("select s from Student s " 
+                +"JOIN FETCH s.courses "
+                +"WHERE s.id = :data", Student.class);
+        
+        query.setParameter("data", id);
+
+        //execute query
+        Student student = query.getSingleResult();
+
+        return student;
+    }
+
+    @Override
+    @Transactional
+    public void update(Student theStudent) {
+        entityManager.merge(theStudent);
+    }
+
+    @Override
+    @Transactional
+    public void deleteStudentById(Integer id) {
+        Student tempStudent = entityManager.find(Student.class, id);
+        entityManager.remove(tempStudent);
     }
 }

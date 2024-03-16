@@ -6,6 +6,7 @@ import com.jpa.demo.entity.Course;
 import com.jpa.demo.entity.Instructor;
 import com.jpa.demo.entity.InstructorDetail;
 import com.jpa.demo.entity.Review;
+import com.jpa.demo.entity.Student;
 
 public interface AppDAO {
 
@@ -34,5 +35,13 @@ public interface AppDAO {
     void save(Course theCourse);
 
     Course findCourseAndReviewsByCourseId(Integer id);
+
+    Course findCourseAndStudentsByCourseId(Integer id);
+
+    Student findStudentAndCoursesByStudentId(Integer id);
+
+    void update(Student theStudent);
+
+    void deleteStudentById(Integer id);
 
 }
